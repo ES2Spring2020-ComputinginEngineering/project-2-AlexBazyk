@@ -56,17 +56,18 @@ def createTestCase(glucose,hemoglobin):
     return newglucose, newhemoglobin, normg, normh
 
 def calculateDistanceArray(newglucose, newhemoglobin, glucose, hemoglobin):
-    Distance = np.zeros(len(newglucose))
+    Distance = np.zeros(len(glucose))
     for i in range(len(Distance)):
         d1 = (newglucose[0] - glucose[i])**2
         d2 = (newhemoglobin[0] - hemoglobin[i])**2
         Distance[i] = np.add(d1,d2)
     Distance = np.sqrt(Distance)
+    return Distance
 
 def nearestNeighborClassifier(newglucose, newhemoglobin, glucose, hemoglobin, classification):
     Distance = calculateDistanceArray(newglucose, newhemoglobin, glucose, hemoglobin)
-    MinDistance = np.argmin(Distance)
-    TheClassification = classification[MinDistance]
+    MinIndex = np.argmin(Distance)
+    TheClassification = classification[MinIndex]
     return TheClassification
 
 def graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classification, newclass):
@@ -76,13 +77,32 @@ def graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classification
     if(newclass == 1): 
         plt.scatter(newhemoglobin,newglucose,c = "black", s = 100)
     else:
-        plt.plot(newhemoglobin,newglucose, c= "red", s = 100)
+        plt.scatter(newhemoglobin,newglucose, c= "red", s = 100)
     plt.xlabel("Hemoglobin")
     plt.ylabel("Glucose")
     plt.title("Glucose vs. Hemoglobin with Test Point")
     plt.legend()
     plt.show()
     
+def kNearestNeighborClassifier(k, newglucose, newhemoglobin, glucose, hemoglobin, classification):
+    Distance = calculateDistanceArray(newglucose, newhemoglobin, glucose, hemoglobin)
+    sorted_indices = np.argsort(Distance)
+    #print("sorted ind", sorted_indices)
+    k_indices = sorted_indices[:k]
+    #print("hemos: ", hemoglobin[k_indices], " \nglucos: ", glucose[k_indices])
+    k_classifications = classification[k_indices]
+    print(k_classifications)
+    print(k_classifications.size)
+    sum = 0
+    for i in range(k):
+        sum +=k_classifications[i]
+    sum = sum/k
+    print(sum)
+    if(sum > .5):
+        return 1
+    else:
+        return 0
+
             
 
 
@@ -106,12 +126,13 @@ print(newg,newh, normnewg, normnewh)
 
 gnorm,hnorm,cnorm = normalizeData(glucose,hemoglobin,classification)
 
-Distance_Array = calculateDistanceArray(normnewg,normnewh,gnorm,hnorm)
 ClassForNewPoint = nearestNeighborClassifier(normnewg,normnewh,gnorm,hnorm,cnorm)
 print(ClassForNewPoint)
 print(type(ClassForNewPoint))
 
 graphTestCase(normnewg,normnewh,gnorm,hnorm,cnorm,ClassForNewPoint)
 
-graphData(gnorm,hnorm,cnorm)
+#graphData(gnorm,hnorm,cnorm)
+k = 9
+k_classes = kNearestNeighborClassifier(k, normnewg, normnewh, glucose, hemoglobin, classification)
 
