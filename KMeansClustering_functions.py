@@ -68,20 +68,33 @@ def updatecentroid(distance,centroid,glucose,hemoglobin):
     
     #updates centroid
     counter = 0
+    
     for k in range(len(centroid)):
+        centroid[k,0] = 0
+        centroid[k,1] = 0
+        #print("start ", centroid[k,0])
         for l in range(len(distance[0])):
             if(ClosestClass[l] == k):
-                newg = centroid[k,0] + glucose[l]
-                newh = centroid[k,1] + hemoglobin[l]
-                centroid[k,0] = newg
-                centroid[k,1] = newh
+                centroid[k,0] = centroid[k,0] + glucose[l]
+                centroid[k,1] = centroid[k,1] + hemoglobin[l]
+                #print(centroid[k,0])
                 counter +=1
         centroid[k,0] = centroid[k,0] / counter
+        #print(centroid[k,0])
         centroid[k,1] = centroid[k,1] / counter
         counter = 0
     #print(centroid)
     return centroid, ClosestClass
-            
-            
-            
+
+
+def graphingKMeans(glucose, hemoglobin, assignment, centroids):
+    plt.figure()
+    for i in range(int(np.amax(assignment))+1):
+        rcolor = np.random.rand(3,)
+        plt.plot(hemoglobin[assignment==i],glucose[assignment==i], ".", label = "Class " + str(i), color = rcolor)
+        plt.plot(centroids[i, 1], centroids[i, 0], "D", label = "Centroid " + str(i), color = rcolor)
+    plt.xlabel("Hemoglobin")
+    plt.ylabel("Glucose")
+    plt.legend()
+    plt.show()
 

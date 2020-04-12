@@ -93,12 +93,12 @@ def kNearestNeighborClassifier(k, newglucose, newhemoglobin, glucose, hemoglobin
     #print("hemos: ", hemoglobin[k_indices], " \nglucos: ", glucose[k_indices])
     k_classifications = classification[k_indices]
     print(k_classifications)
-    print(k_classifications.size)
+    #print(k_classifications.size)
     sum = 0
     for i in range(k):
         sum +=k_classifications[i]
     sum = sum/k
-    print(sum)
+    print("Average classification is: ", sum)
     if(sum > .5):
         return 1
     else:
@@ -136,4 +136,5 @@ graphTestCase(normnewg,normnewh,gnorm,hnorm,cnorm,ClassForNewPoint)
 #graphData(gnorm,hnorm,cnorm)
 k = 9
 k_classes = kNearestNeighborClassifier(k, normnewg, normnewh, glucose, hemoglobin, classification)
+graphTestCase(normnewg,normnewh,gnorm,hnorm,cnorm,k_classes)
 

@@ -13,19 +13,41 @@ print("Starting centriod: \n", centroids)
 DistancesFromEachCentroid = kmc.findDtoCentroid(glucose,hemoglobin,centroids)
 #print(DistancesFromEachCentroid)
 
-for i in range(15000):
+for i in range(1000):
+    DistancesFromEachCentroid = kmc.findDtoCentroid(glucose,hemoglobin,centroids)
     centroids, ClosestClass = kmc.updatecentroid(DistancesFromEachCentroid,centroids,glucose,hemoglobin)
+    #print(centroids)
+    #kmc.graphingKMeans(glucose, hemoglobin, ClosestClass, centroids)
 
+#print(ClosestClass)
 print("Ending centriod: \n", centroids)
 
 
 #check for any differences
 #make sure do false pos and neg tmrw! :)
-numDiff = 0
+pos = 0
+neg = 0
+falsepos = 0
+falseneg = 0
+totalcases = len(classification)
 for i in range(len(ClosestClass)):
-    if(int(classification[i]) != int(ClosestClass[i])):
-        numDiff +=1
-#        print(i,classification[i],ClosestClass[i])
-#        print("Difference was found! At Location: ", i)
-print(numDiff)      
+    if(ClosestClass[i] != classification[i]):
+        if(ClosestClass[i] == 1):
+            falseneg+=1
+        else:
+            falsepos+=1
+if(falseneg!=0):
+    print("Number incorrectly labeled as being in class 1: ", falseneg)
+    print("Percentage out of total patients: ", falseneg/totalcases*100, "%")
+else:
+    print("No Incorrectly labeled class 1 cases")
+if(falsepos!=0):
+    print("Number incorrectly labeled as being in class 0: ", falsepos)
+    print("Percentage out of total patients: ", falsepos/totalcases*100,"%")
+else:
+    print("No Incorrectly labeled class 1 cases")
+    
+
+kmc.graphingKMeans(glucose, hemoglobin, ClosestClass, centroids)
+
     
