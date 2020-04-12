@@ -16,7 +16,6 @@ def createcentroids(k):
         rhemo = np.random.rand(1)
         total[i,0] = rgluc
         total[i,1] = rhemo
-    print(total)
     return total
 
 def findDtoCentroid(glucose,hemoglobin,centroids):
@@ -27,7 +26,6 @@ def findDtoCentroid(glucose,hemoglobin,centroids):
             dhemo = (centroids[i,1] - hemoglobin[j])**2
             Distance[i,j] = np.add(dgluc,dhemo)
     Distance = np.sqrt(Distance)
-    print(Distance)
     return Distance
 
 
@@ -48,5 +46,42 @@ def normalizeData(glucose, hemoglobin, classification):
         normalized = (classification[j]-c_min)/(c_max-c_min)
         classification[j] = normalized
     return glucose , hemoglobin, classification
+
+
+#look at distance for each
+#see which is smallest
+#find average of all which are closes to it
+#update it.
+
+
+def updatecentroid(distance,centroid,glucose,hemoglobin):
+    ClosestDist = np.ones((len(distance[0])))
+    ClosestDist = np.add(ClosestDist,10)
+    ClosestClass = np.zeros((len(distance[0])))
+    for i in range(len(distance)): #i is each centroid's distance
+        for j in range(len(distance[0])): # loops through each distance
+            if(distance[i,j] < ClosestDist[j]):
+                ClosestDist[j] = distance[i,j]
+                ClosestClass[j] = i
+#    print(ClosestDist)                
+#    print(ClosestClass)
+    
+    #updates centroid
+    counter = 0
+    for k in range(len(centroid)):
+        for l in range(len(distance[0])):
+            if(ClosestClass[l] == k):
+                newg = centroid[k,0] + glucose[l]
+                newh = centroid[k,1] + hemoglobin[l]
+                centroid[k,0] = newg
+                centroid[k,1] = newh
+                counter +=1
+        centroid[k,0] = centroid[k,0] / counter
+        centroid[k,1] = centroid[k,1] / counter
+        counter = 0
+    #print(centroid)
+    return centroid, ClosestClass
+            
+            
             
 
