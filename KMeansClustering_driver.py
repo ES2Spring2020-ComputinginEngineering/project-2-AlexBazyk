@@ -20,6 +20,7 @@ print("Ending centriod: \n", centroids)
 
 
 #check for any differences
+#make sure do false pos and neg tmrw! :)
 numDiff = 0
 for i in range(len(ClosestClass)):
     if(int(classification[i]) != int(ClosestClass[i])):
