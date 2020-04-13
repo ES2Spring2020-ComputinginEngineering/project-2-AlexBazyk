@@ -24,6 +24,11 @@ KMeansClusteringdriver.py
 	to get the false positives and the like, unocmment the code at the end that is 
 	marked as "--------------------" (lines 30-51)
 	this will print out the extra data neeeded.
+	One small note, sometimes the code flips which is class 1 and 0 when printing
+	so it may say that every point is not the correct class but that just means that it didn't
+	interpret it properly, if you manually flip it, everything it works. Also just running it 
+	again should give the same endpoints and shows that there are minimal points incorrectly
+	labeled.
 	
 	
 	
