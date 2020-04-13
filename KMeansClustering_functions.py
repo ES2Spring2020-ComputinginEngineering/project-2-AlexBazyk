@@ -1,14 +1,19 @@
 #Please place your FUNCTION code for step 4 here.
+#Alex Bazyk Functions
 
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-
+#takes no parameters
+#opens file and grabs the data
+#returns numpy arrays of glucose, hemoglobin, and classification
 def openckdfile():
     glucose, hemoglobin, classification = np.loadtxt('ckd.csv', delimiter=',', skiprows=1, unpack=True)
     return glucose, hemoglobin, classification
 
+#takes a parameter k which is the amount of cnetroids to create
+#returns the randomly generated k centroids in a numpy array (k by 2)
 def createcentroids(k):
     total = np.zeros((k,2))
     for i in range(k):
@@ -18,6 +23,9 @@ def createcentroids(k):
         total[i,1] = rhemo
     return total
 
+#takes in gluc, hemo, and centroids numpy arrays
+#finds the distance from each point to all the centroids
+#returns this numpy array which is k by length of data long
 def findDtoCentroid(glucose,hemoglobin,centroids):
     Distance = np.zeros((len(centroids),len(glucose)))
     for i in range(len(centroids)):
@@ -29,6 +37,9 @@ def findDtoCentroid(glucose,hemoglobin,centroids):
     return Distance
 
 
+#normalizes the data given in gluc, hemo,class numpy arrays
+#uses normalization algorithim
+#returns the gluc, hemo,class numpy arrays
 def normalizeData(glucose, hemoglobin, classification):
     g_max = np.amax(glucose)
     g_min = np.amin(glucose)
@@ -52,8 +63,7 @@ def normalizeData(glucose, hemoglobin, classification):
 #see which is smallest
 #find average of all which are closes to it
 #update it.
-
-
+#returns the updated centroid and the closest class numpy array
 def updatecentroid(distance,centroid,glucose,hemoglobin):
     ClosestDist = np.ones((len(distance[0])))
     ClosestDist = np.add(ClosestDist,10)
@@ -86,7 +96,9 @@ def updatecentroid(distance,centroid,glucose,hemoglobin):
     #print(centroid)
     return centroid, ClosestClass
 
-
+#graphs the data stored in glucose, hemoglobin, assignment, and centroids 
+#numpy arrays
+#returns nothing but prints out the graph
 def graphingKMeans(glucose, hemoglobin, assignment, centroids):
     plt.figure()
     for i in range(int(np.amax(assignment))+1):

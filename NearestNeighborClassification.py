@@ -8,10 +8,16 @@ import random
 
 
 # FUNCTIONS
+
+#takes no parameters. returns glucose, hemo, class numpy arrays based on 
+# the the data stored in the file.
 def openckdfile():
     glucose, hemoglobin, classification = np.loadtxt('ckd.csv', delimiter=',', skiprows=1, unpack=True)
     return glucose, hemoglobin, classification
 
+#normalizes the data of glucose, hemo, class numpy arrays as a value from 0-1.
+#does this through an equation
+#returns the new normalized data in numpy arrays
 def normalizeData(glucose, hemoglobin, classification):
     g_max = np.amax(glucose)
     g_min = np.amin(glucose)
@@ -30,6 +36,8 @@ def normalizeData(glucose, hemoglobin, classification):
         classification[j] = normalized
     return glucose , hemoglobin, classification
 
+#graphs the data stored in the glucose, hemoglobin, classification numpy arrays
+#returns nothing but prints out the graph
 def graphData(glucose,hemoglobin,classification):
     plt.figure()
     plt.plot(hemoglobin[classification==1],glucose[classification==1], "k.", label = "Class 1")
@@ -40,6 +48,12 @@ def graphData(glucose,hemoglobin,classification):
     plt.legend()
     plt.show()
 
+#Parameters: glucose and hemoglobin numpy arrays not normalized
+#Creates test points by creating random numbers between 0 and 1 which is 
+#the bounds for the normalized data
+#Also creates variables using min and max and the random numbers which are 
+#values that are those random numbers scaled to the non normalized data
+#Returns all 4 of those numbers just in case either of them are ever needed.
 def createTestCase(glucose,hemoglobin):
     g_max = np.amax(glucose)
     g_min = np.amin(glucose)
@@ -56,6 +70,10 @@ def createTestCase(glucose,hemoglobin):
     
     return newglucose, newhemoglobin, normg, normh
 
+#takes in the test point(numpy arrays) and glucose, hemoglobing numpy arrays
+#calculates the distance between the test case and every point in the 
+#gluc and numpy arrays
+#returns a distance numpy array that holds all those distances
 def calculateDistanceArray(newglucose, newhemoglobin, glucose, hemoglobin):
     Distance = np.zeros(len(glucose))
     for i in range(len(Distance)):
@@ -65,12 +83,20 @@ def calculateDistanceArray(newglucose, newhemoglobin, glucose, hemoglobin):
     Distance = np.sqrt(Distance)
     return Distance
 
+#parameters: glucose, hemoglobin, classification numpy arrays as well as the test cases in numpy arrays
+#Calls upon calculate distance function and stores that in a distance numpy array
+#Use np.argmin(distance) to find the minimum index
+#Get the classification of that minimum distance
+#Return that classification
 def nearestNeighborClassifier(newglucose, newhemoglobin, glucose, hemoglobin, classification):
     Distance = calculateDistanceArray(newglucose, newhemoglobin, glucose, hemoglobin)
     MinIndex = np.argmin(Distance)
     TheClassification = classification[MinIndex]
     return TheClassification
 
+#takes in test point, gluc, hemo, classification numpy arrays and the class for the test point
+#graphs all of that data on a graph
+#returns nothing.
 def graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classification, newclass):
     plt.figure()
     plt.plot(hemoglobin[classification==1],glucose[classification==1], "k.", label = "Class 1")
@@ -84,7 +110,16 @@ def graphTestCase(newglucose, newhemoglobin, glucose, hemoglobin, classification
     plt.title("Glucose vs. Hemoglobin with Test Point")
     plt.legend()
     plt.show()
-    
+
+#parameters: k points to observe, test case hemoglobin and glucose, and numpy arrays of 
+#glucose and hemoglobin and classification
+#Calls upon distance function created earlier for test case and real cases and stores 
+#that in a numpy array
+#Sorts the distance function using np.argsort
+#Grabs the k classifications from that. This new variable is a numpy array that 
+#stores the k nearest point’s classifications.
+#From there, the average classification of array is found and if the average is above 
+#.5 it is treated as 1 and below is 0. This value is then returned.
 def kNearestNeighborClassifier(k, newglucose, newhemoglobin, glucose, hemoglobin, classification):
     Distance = calculateDistanceArray(newglucose, newhemoglobin, glucose, hemoglobin)
     sorted_indices = np.argsort(Distance)
@@ -123,18 +158,15 @@ plt.show()
 newg, newh, normnewg, normnewh = createTestCase(glucose,hemoglobin)
 print(newg,newh, normnewg, normnewh)
 
-
-
 gnorm,hnorm,cnorm = normalizeData(glucose,hemoglobin,classification)
 
 ClassForNewPoint = nearestNeighborClassifier(normnewg,normnewh,gnorm,hnorm,cnorm)
 print(ClassForNewPoint)
-print(type(ClassForNewPoint))
 
 graphTestCase(normnewg,normnewh,gnorm,hnorm,cnorm,ClassForNewPoint)
 
 #graphData(gnorm,hnorm,cnorm)
-k = 9
+k = int(input("How many nearest points should be taken into consideration?: "))
 k_classes = kNearestNeighborClassifier(k, normnewg, normnewh, glucose, hemoglobin, classification)
 graphTestCase(normnewg,normnewh,gnorm,hnorm,cnorm,k_classes)
 
