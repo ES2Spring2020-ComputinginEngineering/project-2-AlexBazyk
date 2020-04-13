@@ -12,7 +12,7 @@ def openckdfile():
     glucose, hemoglobin, classification = np.loadtxt('ckd.csv', delimiter=',', skiprows=1, unpack=True)
     return glucose, hemoglobin, classification
 
-#takes a parameter k which is the amount of cnetroids to create
+#takes a parameter k which is the amount of centroids to create
 #returns the randomly generated k centroids in a numpy array (k by 2)
 def createcentroids(k):
     total = np.zeros((k,2))
@@ -59,6 +59,7 @@ def normalizeData(glucose, hemoglobin, classification):
     return glucose , hemoglobin, classification
 
 
+#parameters: distance, centroid, gluc, hemo numpy arrays
 #look at distance for each
 #see which is smallest
 #find average of all which are closes to it
